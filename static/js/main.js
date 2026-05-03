@@ -333,7 +333,7 @@
             const submitBtn = document.getElementById('leadSubmitBtn');
 
             // URL base del backend — en producción apunta a tu app de Fly.io
-            var API_BASE = window.FISCALAI_API_BASE || 'https://fiscalai-backend.fly.dev';
+            var API_BASE = window.FISCALAI_API_BASE || 'https://fiscalai.fly.dev';
 
             // Check if user already submitted (localStorage como caché local)
             const existingLead = localStorage.getItem(STORAGE_KEY);
@@ -464,7 +464,7 @@
 
         // ========== PRICING MODAL ==========
         (function() {
-            var API_BASE = window.FISCALAI_API_BASE || 'https://fiscalai-backend.fly.dev';
+            var API_BASE = window.FISCALAI_API_BASE || 'https://fiscalai.fly.dev';
             var overlay = document.getElementById('pricingModal');
             var closeBtn = document.getElementById('pricingModalClose');
             var planLabel = document.getElementById('pricingModalPlan');

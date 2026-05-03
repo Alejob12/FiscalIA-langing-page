@@ -290,6 +290,9 @@
         .modal-success { font-size:0.76rem; color:var(--accent); display:none; padding:8px 12px; background:rgba(16,185,129,0.1); border-radius:6px; margin-bottom:14px; }
         .modal-success.show { display:block; }
 
+        /* ── APP SHELL hidden until login ──────────────────────────────── */
+        #appShell { display:none; }
+
         /* ── RESPONSIVE ─────────────────────────────────────────────────── */
         @media(max-width:768px) {
             .tab-panel { padding:20px 16px 48px; }
@@ -988,8 +991,12 @@
 
             document.getElementById('dashTs').textContent = 'Última actualización: ' + new Date().toLocaleTimeString('es-CO');
         }).catch(function(err) {
-            showErr('errDash', 'Error al cargar datos: ' + err.message);
+            var msg = err.message || 'Error desconocido';
+            showErr('errDash', 'Error al cargar datos: ' + msg);
             document.getElementById('dashTs').textContent = 'Error al cargar';
+            document.getElementById('funnelContainer').innerHTML = '<div style="color:var(--danger);font-size:0.82rem;">No se pudo cargar el pipeline: ' + esc(msg) + '</div>';
+            document.getElementById('recentLeadsContainer').innerHTML = '<div style="color:var(--danger);font-size:0.82rem;">No se pudieron cargar los leads: ' + esc(msg) + '</div>';
+            console.error('[FiscalAI Admin] loadDashboard error:', err);
         });
     }
 
@@ -1009,7 +1016,8 @@
             renderPipeline();
         }).catch(function(err) {
             showErr('errPipeline', 'Error al cargar leads: ' + err.message);
-            document.getElementById('pipelineBody').innerHTML = '<tr class="empty-row"><td colspan="8">No se pudieron cargar los leads.</td></tr>';
+            document.getElementById('pipelineBody').innerHTML = '<tr class="empty-row"><td colspan="8">Error: ' + esc(err.message) + '</td></tr>';
+            console.error('[FiscalAI Admin] loadPipeline error:', err);
         });
     }
 
@@ -1112,7 +1120,8 @@
             renderClients();
         }).catch(function(err) {
             showErr('errClients', 'Error al cargar clientes: ' + err.message);
-            document.getElementById('clientsBody').innerHTML = '<tr class="empty-row"><td colspan="9">No se pudieron cargar los clientes.</td></tr>';
+            document.getElementById('clientsBody').innerHTML = '<tr class="empty-row"><td colspan="9">Error: ' + esc(err.message) + '</td></tr>';
+            console.error('[FiscalAI Admin] loadClients error:', err);
         });
     }
 
@@ -1219,6 +1228,9 @@
             renderReqs();
         }).catch(function(err) {
             showErr('errFinances', 'Error al cargar finanzas: ' + err.message);
+            document.getElementById('subsBody').innerHTML = '<tr class="empty-row"><td colspan="8">Error: ' + esc(err.message) + '</td></tr>';
+            document.getElementById('reqsBody').innerHTML = '<tr class="empty-row"><td colspan="7">Error: ' + esc(err.message) + '</td></tr>';
+            console.error('[FiscalAI Admin] loadFinances error:', err);
         });
     }
 
@@ -1405,7 +1417,8 @@
             }).join('');
         }).catch(function(err) {
             showErr('errEmails', 'Error al cargar correos: ' + err.message);
-            document.getElementById('emailsBody').innerHTML = '<tr class="empty-row"><td colspan="6">No se pudieron cargar los correos.</td></tr>';
+            document.getElementById('emailsBody').innerHTML = '<tr class="empty-row"><td colspan="6">Error: ' + esc(err.message) + '</td></tr>';
+            console.error('[FiscalAI Admin] loadEmails error:', err);
         });
     }
 

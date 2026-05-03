@@ -292,8 +292,7 @@ def _send_via_resend(to_email: str, to_name: str | None, subject: str, body_html
     if not api_key:
         return False, "RESEND_API_KEY no configurada en el servidor."
     from_addr = os.getenv("RESEND_FROM_EMAIL", "FiscalAI <onboarding@resend.dev>")
-    to_addr = f"{to_name} <{to_email}>" if to_name else to_email
-    payload = json.dumps({"from": from_addr, "to": [to_addr], "subject": subject, "html": body_html}).encode()
+    payload = json.dumps({"from": from_addr, "to": [to_email], "subject": subject, "html": body_html}).encode()
     req = urllib.request.Request(
         "https://api.resend.com/emails",
         data=payload,

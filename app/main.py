@@ -297,16 +297,22 @@ def _send_via_resend(to_email: str, to_name: str | None, subject: str, body_html
     req = urllib.request.Request(
         "https://api.resend.com/emails",
         data=payload,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "fiscalai-backend/1.0",
+            "Accept": "application/json",
+        },
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=15) as resp:
             return True, json.loads(resp.read()).get("id", "ok")
     except urllib.error.HTTPError as e:
-        return False, f"HTTP {e.code}: {e.read().decode()[:200]}"
+        body = e.read().decode(errors="replace")[:400]
+        return False, f"HTTP {e.code}: {body}"
     except Exception as exc:
-        return False, str(exc)[:200]
+        return False, str(exc)[:400]
 
 
 # ─── Admin: leads unificados + pipeline ───────────────────────────────────────

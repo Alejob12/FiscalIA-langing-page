@@ -847,13 +847,13 @@
 
     document.getElementById('btnRefresh').addEventListener('click', loadCurrentTab);
 
-    window.loadCurrentTab = function() {
+    function loadCurrentTab() {
         if (currentTab === 'dashboard')  loadDashboard();
         else if (currentTab === 'pipeline') loadPipeline();
         else if (currentTab === 'clients')  loadClients();
         else if (currentTab === 'finances') loadFinances();
         else if (currentTab === 'emails')   loadEmails();
-    };
+    }
 
     // ── API FETCH ───────────────────────────────────────────────────────────
     function apiFetch(path, opts) {

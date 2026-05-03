@@ -82,6 +82,30 @@ class ContactFormOut(ContactFormCreate):
     model_config = {"from_attributes": True}
 
 
+# ─── Pricing Lead (index.html — modal de planes) ──────────────────────────────
+
+class PricingLeadCreate(BaseModel):
+    name: str
+    email: EmailStr
+    plan: str
+    message: str
+    source: Optional[str] = "pricing_modal"
+
+    @field_validator("name", "plan", "message")
+    @classmethod
+    def not_empty(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Este campo no puede estar vacío")
+        return v.strip()
+
+
+class PricingLeadOut(PricingLeadCreate):
+    id: int
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 # ─── Generic response ─────────────────────────────────────────────────────────
 
 class MessageResponse(BaseModel):

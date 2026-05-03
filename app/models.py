@@ -58,3 +58,20 @@ class ContactForm(Base):
     source     = Column(String(50), default="contact_form")
     ip_address = Column(String(50), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class PricingLead(Base):
+    """
+    Mensajes capturados desde el modal de planes de precios (index.html).
+    Campos: nombre, email, plan seleccionado, mensaje libre.
+    """
+    __tablename__ = "pricing_leads"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    name       = Column(String(120), nullable=False)
+    email      = Column(String(180), nullable=False, index=True)
+    plan       = Column(String(60), nullable=False)   # Freemium, PYME Pro, Enterprise
+    message    = Column(Text, nullable=False)
+    source     = Column(String(50), default="pricing_modal")
+    ip_address = Column(String(50), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

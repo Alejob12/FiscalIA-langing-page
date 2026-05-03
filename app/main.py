@@ -235,6 +235,52 @@ def _require_admin(request: Request):
             detail="API key inválida.",
         )
 
+# ─── Pricing Lead (index.html — modal de planes de precios) ───────────────────
+
+@app.post(
+    "/api/leads/pricing",
+    response_model=schemas.MessageResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["Leads"],
+    summary="Registra un mensaje desde el modal de planes de precios",
+)
+def create_pricing_lead(
+    lead: schemas.PricingLeadCreate,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    db_lead = models.PricingLead(
+        **lead.model_dump(),
+        ip_address=get_client_ip(request),
+    )
+    db.add(db_lead)
+    db.commit()
+    db.refresh(db_lead)
+    return schemas.MessageResponse(
+        ok=True,
+        message="¡Gracias! Un asesor te contactará pronto.",
+        id=db_lead.id,
+    )
+
+
+@app.get(
+    "/api/leads/pricing",
+    response_model=List[schemas.PricingLeadOut],
+    tags=["Leads"],
+    summary="Lista todos los pricing leads (protegido con API key)",
+)
+def list_pricing_leads(
+    request: Request,
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+):
+    _require_admin(request)
+    return db.query(models.PricingLead).order_by(
+        models.PricingLead.created_at.desc()
+    ).offset(skip).limit(limit).all()
+
+
 # ─── Servir archivos estáticos (frontend) ─────────────────────────────────────
 app.mount("/assets", StaticFiles(directory="static/assets"), name="assets")
 app.mount("/pages", StaticFiles(directory="static/pages"), name="pages")

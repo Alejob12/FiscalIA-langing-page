@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiscalAI — Problematica</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+        .step-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        .step-active {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-height: 350px;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+
+    <!-- Navegación -->
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-slate-900">Fiscal<span class="text-emerald-500">AI</span></a>
+                </div>
+                <div class="hidden sm:flex items-center space-x-8">
+                    <a href="#problema" class="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">El Problema</a>
+                    <a href="#solucion" class="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Solución</a>
+                    <a href="#mercado" class="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Mercado</a>
+                    <a href="#modelo" class="text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">Precios</a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="sm:hidden flex items-center">
+                    <button id="menuBtn" class="text-gray-600 hover:text-slate-900">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobileMenu" class="sm:hidden hidden pb-4 space-y-2">
+                <a href="#problema" class="block text-sm font-medium text-gray-600 hover:text-emerald-600 py-1">El Problema</a>
+                <a href="#solucion" class="block text-sm font-medium text-gray-600 hover:text-emerald-600 py-1">Solución</a>
+                <a href="#mercado" class="block text-sm font-medium text-gray-600 hover:text-emerald-600 py-1">Mercado</a>
+                <a href="#modelo" class="block text-sm font-medium text-gray-600 hover:text-emerald-600 py-1">Precios</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="bg-slate-900 text-white pt-20 pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-emerald-400 uppercase bg-emerald-900/30 rounded-full">
+                    Innovación en TI &amp; Diseño de Producto
+                </div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
+                    La Contabilidad no debería quebrar a las PYMES.
+                </h1>
+                <p class="text-lg text-slate-300 mb-8 max-w-lg">
+                    Automatización de formatos DIAN mediante OCR y Modelos de Lenguaje (LLM). Reduce costos operativos y
+                    garantiza cumplimiento sin la carga técnica de los grandes ERPs.
+                </p>
+                <a href="#problema" class="inline-block px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-emerald-500/25">
+                    Ver el Impacto ↓
+                </a>
+            </div>
+            <div class="md:w-1/2 pl-0 md:pl-10">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-2xl">
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 p-3 bg-slate-700/50 rounded-lg">
+                            <div class="h-10 w-10 bg-red-100 rounded flex items-center justify-center text-xl">🧾</div>
+                            <div>
+                                <p class="text-sm text-slate-400">Entrada</p>
+                                <p class="font-mono text-sm">Factura_001.pdf</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-center text-emerald-400 text-xl">⬇</div>
+                        <div class="flex items-center space-x-4 p-3 bg-emerald-900/20 border border-emerald-500/30 rounded-lg">
+                            <div class="h-10 w-10 bg-emerald-100 rounded flex items-center justify-center text-xl">🤖</div>
+                            <div>
+                                <p class="text-sm text-emerald-400">Procesamiento IA</p>
+                                <p class="font-mono text-sm text-white">OCR + RAG Classification</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-center text-emerald-400 text-xl">⬇</div>
+                        <div class="flex items-center space-x-4 p-3 bg-slate-700/50 rounded-lg">
+                            <div class="h-10 w-10 bg-blue-100 rounded flex items-center justify-center text-xl">📊</div>
+                            <div>
+                                <p class="text-sm text-slate-400">Salida</p>
+                                <p class="font-mono text-sm">Formato DIAN Validado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección: El Problema -->
+    <section id="problema" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">El Dolor del Mercado: Costos Insostenibles</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Las PYMES actuales gastan recursos desproporcionados en tareas manuales para cumplir con la DIAN.
+                    Los servicios existentes (Numbi, Siigo) son potentes pero costosos o técnicamente complejos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Calculadora Interactiva -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <h3 class="text-xl font-semibold mb-6 flex items-center">
+                        <span class="bg-red-100 text-red-600 py-1 px-3 rounded text-sm mr-3">Simulación</span>
+                        Calculadora de Ineficiencia
+                    </h3>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Salario Mensual Contador / Auxiliar</label>
+                        <input type="range" id="salaryRange" min="1000000" max="5000000" value="2500000" step="100000">
+                        <div class="flex justify-between mt-2 text-sm text-gray-500">
+                            <span>$1M COP</span>
+                            <span id="salaryValue" class="font-bold text-slate-900">$2.5M COP</span>
+                            <span>$5M COP</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Horas mensuales dedicadas a digitación</label>
+                        <input type="range" id="hoursRange" min="10" max="160" value="60" step="5">
+                        <div class="flex justify-between mt-2 text-sm text-gray-500">
+                            <span>10h</span>
+                            <span id="hoursValue" class="font-bold text-slate-900">60h</span>
+                            <span>160h</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <p class="text-sm text-red-800">Costo Anual Operativo Actual:</p>
+                        <p id="annualCost" class="text-3xl font-bold text-red-600">$18,000,000</p>
+                    </div>
+                    <div class="mt-3 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+                        <p class="text-sm text-emerald-800">Con FiscalAI ahorrarías:</p>
+                        <p id="savingsAmount" class="text-3xl font-bold text-emerald-600">$15,600,000</p>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Barras -->
+                <div>
+                    <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">
+                        *Comparativa estimada basada en costos operativos promedios vs suscripción FiscalAI.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección: Solución -->
+    <section id="solucion" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">La Solución: Flujo de Trabajo Inteligente</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">
+                    Utilizamos Inteligencia Artificial Generativa (RAG) para contextualizar los datos fiscales. No es
+                    solo lectura (OCR), es <strong>comprensión contable</strong>.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="step-card bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="text-4xl mb-4">📸</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">1. Captura &amp; OCR</h3>
+                    <p class="text-gray-600 text-sm">
+                        El usuario sube foto o PDF de la factura. El sistema extrae texto crudo eliminando ruido visual.
+                    </p>
+                    <div class="mt-4 text-xs font-mono bg-gray-100 p-2 rounded text-gray-500">
+                        INPUT: imagen_factura.jpg
+                    </div>
+                </div>
+
+                <div class="step-card bg-white p-6 rounded-xl border border-gray-200 shadow-sm step-active">
+                    <div class="text-4xl mb-4">🧠</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">2. Clasificación LLM + RAG</h3>
+                    <p class="text-gray-600 text-sm">
+                        El núcleo de la innovación. Un modelo entrenado con normas DIAN clasifica el gasto y detecta
+                        deducciones.
+                    </p>
+                    <div class="mt-4 text-xs font-mono bg-gray-100 p-2 rounded text-emerald-600">
+                        PROCESSING: Contexto Tributario
+                    </div>
+                </div>
+
+                <div class="step-card bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="text-4xl mb-4">✅</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">3. Formato DIAN</h3>
+                    <p class="text-gray-600 text-sm">
+                        Generación automática de archivos planos o integración directa API con sistemas contables.
+                    </p>
+                    <div class="mt-4 text-xs font-mono bg-gray-100 p-2 rounded text-blue-600">
+                        OUTPUT: JSON / XML Dian
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalle Técnico RAG -->
+            <div class="mt-8 bg-white p-8 rounded-xl border border-slate-200 shadow-lg">
+                <h4 class="text-lg font-bold text-slate-800 mb-2">Detalle Técnico: RAG (Retrieval-Augmented Generation)</h4>
+                <p class="text-gray-600">
+                    A diferencia de un OCR tradicional que solo ve "letras", nuestro sistema consulta una base de datos
+                    vectorial con la normativa tributaria colombiana actualizada. Esto permite que si la IA lee "Compra
+                    de Toner", sepa automáticamente que pertenece a la cuenta de "Gastos de Oficina" y calcule el IVA
+                    deducible según la ley vigente, reduciendo el error humano.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección: Mercado y Competencia -->
+    <section id="mercado" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Estado del Arte y Competencia</h2>
+                    <p class="text-gray-600 mb-6">
+                        Hicimos el <em>due diligence</em>. El mercado está polarizado: soluciones robustas pero caras
+                        (Siigo/Alegra con integraciones) o procesos manuales propensos a errores.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-red-100 text-red-500 font-bold text-xs mt-1">1</span>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-slate-800">Contadores Tradicionales</h4>
+                                <p class="text-sm text-gray-500">Alta precisión, pero costo elevado y respuesta lenta. No escala.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-500 font-bold text-xs mt-1">2</span>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-slate-800">ERPs (Siigo, Alegra) + Integraciones</h4>
+                                <p class="text-sm text-gray-500">Costoso para microempresas. Requiere implementación técnica compleja.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-500 font-bold text-xs mt-1">3</span>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-emerald-700">FiscalAI (Nuestra Propuesta)</h4>
+                                <p class="text-sm text-gray-500">Automatización accesible. Modelo "Pay-as-you-go" o suscripción baja.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Gráfico de Competencia -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h4 class="text-center font-semibold text-slate-700 mb-4">Matriz de Valor: Automatización vs. Costo</h4>
+                    <div class="chart-container">
+                        <canvas id="competitionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer: Modelo de Negocio -->
+    <footer id="modelo" class="bg-slate-900 text-white py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold mb-8">Modelo de Negocio: SaaS Freemium</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 hover:border-slate-500 transition-colors">
+                    <h3 class="font-bold text-lg mb-2">Gratis</h3>
+                    <p class="text-sm text-slate-400">Hasta 15 facturas/mes</p>
+                    <p class="text-sm text-slate-400">Exportación básica</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg border border-emerald-500 relative overflow-hidden hover:border-emerald-400 transition-colors">
+                    <div class="absolute top-0 right-0 bg-emerald-500 text-xs font-bold px-2 py-1 rounded-bl">POPULAR</div>
+                    <h3 class="font-bold text-lg mb-2 text-emerald-400">PYME Pro</h3>
+                    <p class="text-sm text-slate-400">Facturas ilimitadas</p>
+                    <p class="text-sm text-slate-400">Soporte IA Deducciones</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700 hover:border-slate-500 transition-colors">
+                    <h3 class="font-bold text-lg mb-2">Enterprise</h3>
+                    <p class="text-sm text-slate-400">API para ERPs</p>
+                    <p class="text-sm text-slate-400">Auditoría dedicada</p>
+                </div>
+            </div>
+            <p class="text-slate-500 text-sm">
+                Desarrollado para la clase de Diseño de Productos e Innovación en TI.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ========== MOBILE MENU ==========
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // ========== CALCULADORA INTERACTIVA ==========
+        const salaryRange = document.getElementById('salaryRange');
+        const hoursRange = document.getElementById('hoursRange');
+        const salaryValue = document.getElementById('salaryValue');
+        const hoursValue = document.getElementById('hoursValue');
+        const annualCost = document.getElementById('annualCost');
+        const savingsAmount = document.getElementById('savingsAmount');
+        const fiscalAICostAnnual = 2400000; // $200k/mes * 12
+
+        function formatCOP(value) {
+            return '$' + value.toLocaleString('es-CO');
+        }
+
+        function updateCalculator() {
+            const salary = parseInt(salaryRange.value);
+            const hours = parseInt(hoursRange.value);
+
+            salaryValue.textContent = formatCOP(salary) + ' COP';
+            hoursValue.textContent = hours + 'h';
+
+            // Costo anual = salario * 12 meses (proporcion de horas dedicadas a digitacion)
+            const hourlyRate = salary / 160; // 160 horas laborales por mes
+            const monthlyCost = hourlyRate * hours;
+            const annual = Math.round(monthlyCost * 12);
+
+            annualCost.textContent = formatCOP(annual) + ' COP';
+
+            const savings = Math.max(0, annual - fiscalAICostAnnual);
+            savingsAmount.textContent = formatCOP(savings) + ' COP';
+
+            // Actualizar grafico de barras
+            updateCostChart(annual);
+        }
+
+        salaryRange.addEventListener('input', updateCalculator);
+        hoursRange.addEventListener('input', updateCalculator);
+
+        // ========== GRAFICO: COMPARATIVA DE COSTOS ==========
+        const costCtx = document.getElementById('costChart').getContext('2d');
+        const costChart = new Chart(costCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Método Tradicional', 'FiscalAI'],
+                datasets: [{
+                    label: 'Costo Anual (COP)',
+                    data: [18000000, fiscalAICostAnnual],
+                    backgroundColor: ['#ef4444', '#10b981'],
+                    borderRadius: 8,
+                    barPercentage: 0.6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return formatCOP(context.parsed.y) + ' COP';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value / 1000000).toFixed(0) + 'M';
+                            }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        function updateCostChart(traditionalCost) {
+            costChart.data.datasets[0].data[0] = traditionalCost;
+            costChart.update();
+        }
+
+        // ========== GRAFICO: MATRIZ COMPETITIVA ==========
+        const compCtx = document.getElementById('competitionChart').getContext('2d');
+        new Chart(compCtx, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'Siigo',
+                        data: [{ x: 70, y: 90, r: 18 }],
+                        backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Alegra',
+                        data: [{ x: 55, y: 60, r: 14 }],
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Treinta',
+                        data: [{ x: 30, y: 25, r: 16 }],
+                        backgroundColor: 'rgba(168, 85, 247, 0.6)',
+                        borderColor: '#a855f7',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Numbi.ai',
+                        data: [{ x: 65, y: 70, r: 10 }],
+                        backgroundColor: 'rgba(251, 191, 36, 0.6)',
+                        borderColor: '#f59e0b',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'FiscalAI',
+                        data: [{ x: 85, y: 20, r: 15 }],
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderColor: '#10b981',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true, padding: 16, font: { size: 12 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label +
+                                    ' — Automatización: ' + context.parsed.x +
+                                    '%, Costo: ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Nivel de Automatización →', font: { weight: 'bold' } },
+                        min: 0, max: 100,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Costo para el Cliente →', font: { weight: 'bold' } },
+                        min: 0, max: 100,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    }
+                }
+            }
+        });
+
+        // Inicializar calculadora
+        updateCalculator();
+    </script>
+</body>
+</html>

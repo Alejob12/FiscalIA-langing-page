@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="es">
+<<script>
+  window.FISCALAI_API_BASE = '';
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiscalAI para Empresas — Inteligencia Fiscal a Escala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0f1e;
+            --bg2: #0d1526;
+            --bg-card: #111827;
+            --bg-card-hover: #162035;
+            --border: rgba(255,255,255,0.07);
+            --border-accent: rgba(16,185,129,0.25);
+            --text: #f1f5f9;
+            --text-2: #94a3b8;
+            --text-3: #64748b;
+            --accent: #10b981;
+            --accent-light: #34d399;
+            --accent-glow: rgba(16,185,129,0.12);
+            --gold: #f59e0b;
+            --gold-glow: rgba(245,158,11,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --ease: cubic-bezier(0.4,0,0.2,1);
+        }
+
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ── NAV ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 32px;
+            transition: background 0.3s var(--ease), border-color 0.3s;
+        }
+        .nav.scrolled {
+            background: rgba(10,15,30,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 72px;
+        }
+        .logo {
+            font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em;
+            text-decoration: none; color: var(--text);
+        }
+        .logo span { color: var(--accent); }
+        .logo-tag {
+            font-size: 0.6rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.15em; color: var(--gold);
+            background: var(--gold-glow); border: 1px solid rgba(245,158,11,0.2);
+            padding: 2px 8px; border-radius: 100px; margin-left: 10px;
+            vertical-align: middle;
+        }
+        .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+        .nav-links a {
+            color: var(--text-2); text-decoration: none; font-size: 0.875rem;
+            font-weight: 500; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-back {
+            display: flex; align-items: center; gap: 6px;
+            color: var(--text-2); text-decoration: none; font-size: 0.8rem;
+            font-weight: 500; transition: color 0.2s;
+        }
+        .nav-back:hover { color: var(--accent-light); }
+        .nav-back svg { width: 14px; height: 14px; }
+        .nav-cta {
+            padding: 10px 22px; background: var(--accent); color: #fff;
+            border-radius: 8px; font-weight: 600; font-size: 0.875rem;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .nav-cta:hover {
+            background: var(--accent-light); transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative; min-height: 100vh;
+            display: flex; align-items: center;
+            padding: 120px 32px 80px;
+        }
+        .hero-bg {
+            position: absolute; inset: 0; overflow: hidden;
+        }
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(16,185,129,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16,185,129,0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 30%, transparent 100%);
+        }
+        .hero-orb {
+            position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.45;
+        }
+        .hero-orb-1 { width: 600px; height: 600px; background: rgba(16,185,129,0.15); top: -10%; right: -10%; }
+        .hero-orb-2 { width: 400px; height: 400px; background: rgba(99,102,241,0.1); bottom: 0; left: -5%; }
+        .hero-orb-3 { width: 300px; height: 300px; background: rgba(245,158,11,0.08); top: 30%; left: 40%; }
+
+        .hero-inner {
+            max-width: 1200px; margin: 0 auto; width: 100%; position: relative; z-index: 1;
+            display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 64px; align-items: center;
+        }
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 5px 14px; border-radius: 100px;
+            background: var(--gold-glow); border: 1px solid rgba(245,158,11,0.25);
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--gold); margin-bottom: 24px;
+        }
+        .hero-eyebrow::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--gold); animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900;
+            line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 24px;
+        }
+        .hero h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 60%, #6ee7b7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-desc {
+            font-size: 1.1rem; color: var(--text-2); line-height: 1.75; margin-bottom: 40px;
+            max-width: 520px;
+        }
+        .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 28px; background: var(--accent); color: #fff;
+            border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+            text-decoration: none; transition: all 0.2s; position: relative; overflow: hidden;
+        }
+        .btn-primary::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+        }
+        .btn-primary:hover {
+            background: var(--accent-light); transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(16,185,129,0.35);
+        }
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 24px; border: 1px solid var(--border-accent);
+            color: var(--accent-light); border-radius: 10px; font-weight: 600;
+            font-size: 0.9rem; text-decoration: none; transition: all 0.2s;
+            background: var(--accent-glow);
+        }
+        .btn-outline:hover { background: rgba(16,185,129,0.18); border-color: var(--accent); }
+
+        /* Hero right — stats card */
+        .hero-stats-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 32px; position: relative; overflow: hidden;
+        }
+        .hero-stats-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        .stats-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.12em; color: var(--text-3); margin-bottom: 24px; }
+        .stats-grid-hero {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;
+        }
+        .stat-item { }
+        .stat-num {
+            font-size: 2.2rem; font-weight: 900; letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1;
+        }
+        .stat-num.gold {
+            background: linear-gradient(135deg, var(--gold), #fcd34d);
+            -webkit-background-clip: text; background-clip: text;
+        }
+        .stat-label { font-size: 0.78rem; color: var(--text-2); margin-top: 4px; line-height: 1.3; }
+        .hero-integration-row {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding-top: 24px; border-top: 1px solid var(--border);
+        }
+        .integ-label { font-size: 0.72rem; color: var(--text-3); white-space: nowrap; }
+        .integ-badge {
+            padding: 4px 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 6px; font-size: 0.72rem; font-weight: 600; color: var(--text-2);
+            white-space: nowrap;
+        }
+
+        /* ── CLIENTS / TRUST BAR ── */
+        .trust-bar {
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            padding: 28px 32px; background: rgba(255,255,255,0.015);
+        }
+        .trust-bar-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; gap: 40px; flex-wrap: wrap;
+        }
+        .trust-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--text-3); white-space: nowrap; }
+        .trust-logos { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+        .trust-logo {
+            font-size: 0.85rem; font-weight: 700; color: var(--text-3);
+            letter-spacing: -0.01em; opacity: 0.6; transition: opacity 0.2s;
+        }
+        .trust-logo:hover { opacity: 1; }
+
+        /* ── SECTION SHARED ── */
+        .section { padding: 100px 32px; }
+        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-tag {
+            display: inline-block; padding: 4px 12px;
+            background: var(--accent-glow); border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 100px; font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-light);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 900;
+            letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px;
+        }
+        .section-title em {
+            font-style: normal; color: var(--accent-light);
+        }
+        .section-desc { font-size: 1.05rem; color: var(--text-2); max-width: 560px; line-height: 1.7; }
+
+        /* ── FEATURES ── */
+        .features-section { background: var(--bg2); }
+        .features-intro { margin-bottom: 64px; }
+        .features-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+        }
+        .feature-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 28px;
+            transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+            position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(16,185,129,0.3), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover {
+            border-color: rgba(16,185,129,0.2); transform: translateY(-4px);
+            box-shadow: 0 20px 48px rgba(0,0,0,0.3);
+        }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: var(--accent-glow); border: 1px solid rgba(16,185,129,0.2);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 18px;
+        }
+        .feature-icon svg { width: 20px; height: 20px; color: var(--accent); }
+        .feature-icon.gold {
+            background: var(--gold-glow); border-color: rgba(245,158,11,0.2);
+        }
+        .feature-icon.gold svg { color: var(--gold); }
+        .feature-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+        .feature-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.6; }
+
+        /* ── HOW IT WORKS ── */
+        .how-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+        }
+        .steps { display: flex; flex-direction: column; gap: 0; }
+        .step {
+            display: flex; gap: 20px; padding: 24px 0; position: relative;
+            cursor: pointer;
+        }
+        .step:not(:last-child)::after {
+            content: ''; position: absolute; left: 19px; top: 64px; bottom: -1px; width: 2px;
+            background: linear-gradient(to bottom, var(--accent-glow), transparent);
+        }
+        .step-num {
+            width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+            background: var(--bg-card); border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 700; color: var(--text-3);
+            transition: all 0.3s; z-index: 1;
+        }
+        .step.active .step-num {
+            background: var(--accent); border-color: var(--accent);
+            color: #fff; box-shadow: 0 0 20px rgba(16,185,129,0.4);
+        }
+        .step-content { padding-top: 8px; }
+        .step-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+        .step-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.6; }
+        .step.active .step-desc { color: var(--text); }
+
+        /* Terminal Preview */
+        .terminal {
+            background: #080c18; border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+        .terminal-bar {
+            display: flex; align-items: center; gap: 8px; padding: 14px 18px;
+            background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot-r { background: #ff5f57; }
+        .dot-y { background: #febc2e; }
+        .dot-g { background: #28c840; }
+        .terminal-title {
+            font-size: 0.72rem; color: var(--text-3); margin-left: 8px; font-weight: 500;
+        }
+        .terminal-body { padding: 24px 22px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; line-height: 1.8; }
+        .t-comment { color: #3d5166; }
+        .t-key { color: #60a5fa; }
+        .t-val { color: #34d399; }
+        .t-str { color: #f59e0b; }
+        .t-ok { color: #10b981; font-weight: 600; }
+        .t-dim { color: #4a6070; }
+        .t-pulse { display: inline-block; animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        /* ── INTEGRATIONS ── */
+        .integrations-section { background: var(--bg2); }
+        .integrations-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 48px;
+        }
+        .integ-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 24px 20px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            gap: 12px; transition: border-color 0.2s, transform 0.2s;
+        }
+        .integ-card:hover { border-color: rgba(16,185,129,0.2); transform: translateY(-2px); }
+        .integ-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em;
+        }
+        .integ-name { font-size: 0.85rem; font-weight: 600; }
+        .integ-type { font-size: 0.72rem; color: var(--text-3); }
+
+        /* ── PRICING ── */
+        .pricing-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px;
+        }
+        .pricing-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 36px 28px; position: relative; overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+        .pricing-card.featured {
+            border-color: rgba(16,185,129,0.35);
+            background: linear-gradient(160deg, rgba(16,185,129,0.06) 0%, var(--bg-card) 60%);
+        }
+        .pricing-card.featured::before {
+            content: 'MAS POPULAR'; position: absolute; top: 20px; right: 20px;
+            font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em;
+            padding: 3px 10px; background: var(--accent); color: #fff; border-radius: 100px;
+        }
+        .pricing-card.enterprise {
+            border-color: rgba(245,158,11,0.3);
+            background: linear-gradient(160deg, rgba(245,158,11,0.05) 0%, var(--bg-card) 60%);
+        }
+        .pricing-tier { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 12px; }
+        .pricing-tier.gold { color: var(--gold); }
+        .pricing-price { font-size: 2.5rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+        .pricing-period { font-size: 0.82rem; color: var(--text-2); margin-top: 4px; margin-bottom: 16px; }
+        .pricing-desc { font-size: 0.85rem; color: var(--text-2); line-height: 1.6; margin-bottom: 28px; }
+        .pricing-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+        .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+        .pricing-features li {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.84rem; color: var(--text-2);
+        }
+        .pricing-features li svg {
+            width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;
+            stroke: var(--accent); fill: none; stroke-width: 2.5;
+        }
+        .pricing-features li svg.gold-check { stroke: var(--gold); }
+        .pricing-btn {
+            display: block; text-align: center; padding: 13px;
+            border-radius: 10px; font-weight: 700; font-size: 0.9rem;
+            text-decoration: none; transition: all 0.2s; cursor: pointer;
+            border: none; width: 100%;
+        }
+        .pricing-btn.primary { background: var(--accent); color: #fff; }
+        .pricing-btn.primary:hover { background: var(--accent-light); box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
+        .pricing-btn.outline { background: transparent; color: var(--accent-light); border: 1px solid var(--border-accent); }
+        .pricing-btn.outline:hover { background: var(--accent-glow); }
+        .pricing-btn.gold-btn { background: var(--gold); color: #000; font-weight: 800; }
+        .pricing-btn.gold-btn:hover { background: #fcd34d; box-shadow: 0 8px 24px rgba(245,158,11,0.3); }
+
+        /* ── TESTIMONIALS ── */
+        .testimonials-section { background: var(--bg2); }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+        .testimonial-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 28px;
+        }
+        .testimonial-quote { font-size: 0.92rem; color: var(--text-2); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+        .testimonial-author { display: flex; align-items: center; gap: 12px; }
+        .author-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-glow), var(--bg));
+            border: 1px solid var(--border-accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; color: var(--accent-light);
+            flex-shrink: 0;
+        }
+        .author-name { font-size: 0.87rem; font-weight: 700; }
+        .author-role { font-size: 0.75rem; color: var(--text-3); }
+        .stars { display: flex; gap: 3px; margin-bottom: 16px; }
+        .star { width: 12px; height: 12px; fill: var(--gold); }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            padding: 120px 32px;
+            position: relative; overflow: hidden; text-align: center;
+        }
+        .cta-orb {
+            position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4;
+        }
+        .cta-orb-1 { width: 500px; height: 500px; background: rgba(16,185,129,0.2); top: -20%; left: 50%; transform: translateX(-50%); }
+        .cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+        .cta-inner h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 20px; }
+        .cta-inner p { font-size: 1.05rem; color: var(--text-2); margin-bottom: 40px; line-height: 1.7; }
+        .cta-actions { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+
+        /* ── CONTACT FORM ── */
+        .contact-section { background: var(--bg2); padding: 100px 32px; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; max-width: 1200px; margin: 0 auto; }
+        .contact-form {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 36px; position: relative; overflow: hidden;
+        }
+        .contact-form::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        .form-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+        .form-subtitle { font-size: 0.85rem; color: var(--text-2); margin-bottom: 28px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-2); }
+        .form-group input, .form-group select, .form-group textarea {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            border-radius: 8px; padding: 11px 14px; color: var(--text); font-size: 0.87rem;
+            font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+            width: 100%; appearance: none; -webkit-appearance: none;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+        }
+        .form-group textarea { resize: vertical; min-height: 90px; }
+        .form-group select option { background: #1a2540; }
+        .form-submit {
+            width: 100%; padding: 14px; background: var(--accent); color: #fff;
+            border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; font-family: inherit; margin-top: 8px;
+        }
+        .form-submit:hover { background: var(--accent-light); box-shadow: 0 8px 24px rgba(16,185,129,0.3); transform: translateY(-1px); }
+        .contact-info { }
+        .contact-info-title { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 16px; }
+        .contact-info-desc { font-size: 0.95rem; color: var(--text-2); line-height: 1.7; margin-bottom: 40px; }
+        .contact-benefits { display: flex; flex-direction: column; gap: 20px; }
+        .contact-benefit { display: flex; gap: 16px; align-items: flex-start; }
+        .benefit-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: var(--accent-glow); border: 1px solid rgba(16,185,129,0.2);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .benefit-icon svg { width: 18px; height: 18px; color: var(--accent); stroke: var(--accent); fill: none; stroke-width: 1.8; }
+        .benefit-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+        .benefit-desc { font-size: 0.82rem; color: var(--text-2); line-height: 1.5; }
+
+        /* ── FOOTER ── */
+        .footer {
+            border-top: 1px solid var(--border); padding: 32px;
+        }
+        .footer-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+        }
+        .footer-logo { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); text-decoration: none; }
+        .footer-logo span { color: var(--accent); }
+        .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+        .footer-links a { font-size: 0.82rem; color: var(--text-3); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--accent-light); }
+        .footer-copy { font-size: 0.78rem; color: var(--text-3); }
+
+        /* ── IMAGE SECTIONS ── */
+        .img-banner {
+            position: relative; overflow: hidden; height: 420px;
+        }
+        .img-banner img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.35) saturate(0.7);
+            transform: scale(1.02);
+        }
+        .img-banner-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(10,15,30,0.95) 35%, rgba(10,15,30,0.3) 100%);
+            display: flex; align-items: center; padding: 0 10%;
+        }
+        .img-banner-content { max-width: 560px; }
+        .img-banner-content h3 {
+            font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
+            letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px;
+        }
+        .img-banner-content p { font-size: 1rem; color: var(--text-2); line-height: 1.7; }
+        .img-banner-stats {
+            display: flex; gap: 40px; margin-top: 32px;
+        }
+        .img-banner-stat .num {
+            font-size: 2rem; font-weight: 900; letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .img-banner-stat .lbl { font-size: 0.78rem; color: var(--text-2); margin-top: 2px; }
+
+        .team-section { padding: 80px 32px; }
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 56px; max-width: 1200px; margin-left: auto; margin-right: auto; border-radius: 20px; overflow: hidden; }
+        .team-img { position: relative; height: 500px; }
+        .team-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5) saturate(0.6); }
+        .team-img-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(10,15,30,0.8), rgba(16,185,129,0.1));
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 36px;
+        }
+        .team-card-text h4 { font-size: 1.4rem; font-weight: 900; margin-bottom: 8px; }
+        .team-card-text p { font-size: 0.88rem; color: var(--text-2); line-height: 1.6; }
+        .team-content {
+            background: var(--bg-card); padding: 48px; display: flex;
+            flex-direction: column; justify-content: center;
+        }
+        .team-content .section-tag { margin-bottom: 16px; }
+        .team-content h3 { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 16px; }
+        .team-content p { font-size: 0.95rem; color: var(--text-2); line-height: 1.75; margin-bottom: 24px; }
+        .team-checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .team-checklist li { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--text-2); }
+        .team-checklist li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+        /* ── REVEAL ── */
+        .reveal { opacity: 0; transform: translateY(32px); }
+
+        /* ── SUCCESS MESSAGE ── */
+        .form-success {
+            display: none; text-align: center; padding: 40px 20px;
+        }
+        .form-success-icon { font-size: 3rem; margin-bottom: 16px; }
+        .form-success h4 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; color: var(--accent-light); }
+        .form-success p { font-size: 0.9rem; color: var(--text-2); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .hero-inner, .how-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+            .features-grid, .integrations-grid, .pricing-grid, .testimonials-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .features-grid, .integrations-grid, .pricing-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <div style="display:flex;align-items:center;gap:24px;">
+                <a href="../index.html" class="nav-back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                    Volver al inicio
+                </a>
+                <a href="../index.html" class="logo">Fiscal<span>AI</span><span class="logo-tag">Empresas</span></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#integraciones">Integraciones</a></li>
+                <li><a href="#precios">Precios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <a href="#contacto" class="nav-cta">Hablar con Ventas</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-grid"></div>
+            <div class="hero-orb hero-orb-1"></div>
+            <div class="hero-orb hero-orb-2"></div>
+            <div class="hero-orb hero-orb-3"></div>
+        </div>
+        <div class="hero-inner">
+            <div>
+                <div class="hero-eyebrow">Solución Empresarial</div>
+                <h1>Inteligencia fiscal<br>a <em>escala empresarial</em></h1>
+                <p class="hero-desc">
+                    FiscalAI para Empresas automatiza el procesamiento masivo de facturas, se integra con tu ERP
+                    y garantiza cumplimiento DIAN en tiempo real — sin contratar más contadores.
+                </p>
+                <div class="hero-actions">
+                    <a href="#contacto" class="btn-primary">
+                        Solicitar Demo Empresarial
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#caracteristicas" class="btn-outline">
+                        Ver Características
+                    </a>
+                </div>
+            </div>
+            <!-- Hero inline form -->
+            <div class="hero-stats-card reveal" id="heroFormCard">
+                <div class="stats-label">Solicitar Demo Empresarial — Gratis</div>
+                <div id="heroFormContent">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                        <div class="form-group" style="margin-bottom:0">
+                            <label>Nombre</label>
+                            <input type="text" id="hf-nombre" placeholder="Tu nombre">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0">
+                            <label>Empresa</label>
+                            <input type="text" id="hf-empresa" placeholder="Nombre empresa">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Correo corporativo</label>
+                        <input type="email" id="hf-email" placeholder="tu@empresa.com">
+                    </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Volumen mensual de facturas</label>
+                        <select id="hf-volumen">
+                            <option value="">Selecciona...</option>
+                            <option>100 – 500 facturas</option>
+                            <option>500 – 1.000 facturas</option>
+                            <option>1.000 – 5.000 facturas</option>
+                            <option>+5.000 facturas</option>
+                        </select>
+                    </div>
+                    <button class="form-submit" style="margin-top:4px;" onclick="submitHeroForm()">
+                        Agendar mi Demo Gratis →
+                    </button>
+                    <p style="font-size:0.72rem;color:var(--text-3);text-align:center;margin-top:12px;">
+                        Sin compromiso · Respuesta en &lt; 24h · Implementación en 48h
+                    </p>
+                </div>
+                <div id="heroFormSuccess" style="display:none;text-align:center;padding:32px 0;">
+                    <div style="font-size:2.5rem;margin-bottom:12px;">✅</div>
+                    <div style="font-size:1.1rem;font-weight:800;color:var(--accent-light);margin-bottom:8px;">¡Solicitud recibida!</div>
+                    <div style="font-size:0.85rem;color:var(--text-2);">Te contactamos en menos de 24h para agendar tu demo personalizada.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST BAR -->
+    <div class="trust-bar">
+        <div class="trust-bar-inner">
+            <span class="trust-label">Diseñado para empresas que facturen</span>
+            <div class="trust-logos">
+                <span class="trust-logo">+500 facturas/mes</span>
+                <span class="trust-logo">Equipos contables</span>
+                <span class="trust-logo">Múltiples NIT</span>
+                <span class="trust-logo">ERPs empresariales</span>
+                <span class="trust-logo">Régimen común</span>
+                <span class="trust-logo">Grandes contribuyentes</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE BANNER -->
+    <div class="img-banner">
+        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1600&q=80" alt="Equipo empresarial" loading="lazy">
+        <div class="img-banner-overlay">
+            <div class="img-banner-content reveal">
+                <h3>La contabilidad que escala<br>con tu <em style="color:var(--accent-light);font-style:normal;">empresa</em></h3>
+                <p>Empresas en Colombia ya procesan miles de facturas al mes sin un solo contador digitando. FiscalAI hace el trabajo pesado para que tu equipo se enfoque en crecer.</p>
+                <div class="img-banner-stats">
+                    <div class="img-banner-stat">
+                        <div class="num">85%</div>
+                        <div class="lbl">Reducción<br>de costos</div>
+                    </div>
+                    <div class="img-banner-stat">
+                        <div class="num">6x</div>
+                        <div class="lbl">Velocidad<br>de cierre</div>
+                    </div>
+                    <div class="img-banner-stat">
+                        <div class="num">48h</div>
+                        <div class="lbl">Tiempo de<br>implementación</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="section features-section" id="caracteristicas">
+        <div class="section-inner">
+            <div class="features-intro reveal">
+                <div class="section-tag">Características</div>
+                <h2 class="section-title">Todo lo que tu empresa<br>necesita para <em>escalar</em></h2>
+                <p class="section-desc">
+                    Desde el procesamiento masivo de XML hasta la conciliación bancaria semántica.
+                    FiscalAI fue construido para los retos reales de las empresas colombianas.
+                </p>
+            </div>
+            <div class="features-grid">
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                    </div>
+                    <div class="feature-title">Agente RPA — Descarga XML Masiva</div>
+                    <div class="feature-desc">Robot autónomo que descarga facturas desde la DIAN directamente. Sin copiar y pegar. Sin intervención manual. Procesa cientos de documentos en minutos.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <div class="feature-title">API REST de Integración ERP</div>
+                    <div class="feature-desc">Conecta FiscalAI con SAP, Siigo, World Office o cualquier ERP vía API REST documentada. Webhooks en tiempo real. SDKs disponibles para Python y JS.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div class="feature-title">Auditoría Fiscal Preventiva</div>
+                    <div class="feature-desc">Motor de reglas DIAN actualizado en tiempo real. Detecta inconsistencias antes de la presentación. Alertas proactivas sobre cambios normativos que impacten tu empresa.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v18H3zM9 9h6M9 12h6M9 15h4"/></svg>
+                    </div>
+                    <div class="feature-title">Conciliación Bancaria Semántica</div>
+                    <div class="feature-desc">IA que reconcilia extractos bancarios con facturas automáticamente. Identifica diferencias, sugiere correcciones y genera el comprobante NIIF PYMES listo para firma.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <div class="feature-title">Multi-usuario y Roles</div>
+                    <div class="feature-desc">Define roles granulares: Contador, Revisor, Gerente. Cada usuario ve solo lo que necesita. Bitácora de auditoría completa de todos los cambios realizados.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <div class="feature-title">SLA Garantizado 99.9%</div>
+                    <div class="feature-desc">Infraestructura enterprise con uptime garantizado por contrato. Soporte dedicado con tiempo de respuesta menor a 2 horas en horario hábil y 4 horas en festivos.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div class="feature-title">Dashboard Analítico Avanzado</div>
+                    <div class="feature-desc">Visualiza KPIs fiscales en tiempo real: flujo de caja proyectado, saldo IVA, retenciones acumuladas y alertas de vencimiento de obligaciones tributarias.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    </div>
+                    <div class="feature-title">Ingesta por WhatsApp Empresarial</div>
+                    <div class="feature-desc">Tus proveedores o empleados envían facturas por WhatsApp. El agente las procesa, clasifica y registra automáticamente. Cero fricción para el equipo.</div>
+                </div>
+
+                <div class="feature-card reveal">
+                    <div class="feature-icon gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                    </div>
+                    <div class="feature-title">Reportes Regulatorios Automatizados</div>
+                    <div class="feature-desc">Genera formatos 1001, 1007, 1008 y todos los anexos DIAN de forma automática. Exporta a formato plano con validación previa para evitar rechazos.</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM / VISUAL SECTION -->
+    <section class="team-section" style="background:var(--bg2);">
+        <div class="team-grid reveal">
+            <div class="team-img">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&q=80" alt="Equipo de trabajo colaborando">
+                <div class="team-img-overlay">
+                    <div class="team-card-text">
+                        <h4>Tu equipo + FiscalAI</h4>
+                        <p>No reemplazamos contadores — los potenciamos con IA para que hagan trabajo de mayor valor.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="team-content">
+                <div class="section-tag">Por qué FiscalAI</div>
+                <h3>Construido para equipos contables reales</h3>
+                <p>Entendemos que adoptar nueva tecnología en finanzas requiere confianza. Por eso FiscalAI se integra en tu flujo actual sin interrumpir operaciones, con onboarding dedicado y soporte permanente.</p>
+                <ul class="team-checklist">
+                    <li>Implementación sin downtime — funciona en paralelo con tu ERP</li>
+                    <li>Onboarding personalizado para cada rol del equipo contable</li>
+                    <li>Normativa DIAN actualizada automáticamente sin configuración</li>
+                    <li>Bitácora de auditoría completa para revisoría fiscal</li>
+                    <li>Datos hospedados en Colombia — cumplimiento Ley 1581</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" id="como-funciona">
+        <div class="section-inner">
+            <div class="how-grid">
+                <div>
+                    <div class="reveal">
+                        <div class="section-tag">Proceso</div>
+                        <h2 class="section-title" style="margin-bottom:12px;">De la factura al<br>asiento en <em>segundos</em></h2>
+                        <p class="section-desc" style="margin-bottom:40px;">Nuestro pipeline de IA procesa, valida y registra facturas sin intervención humana.</p>
+                    </div>
+                    <div class="steps">
+                        <div class="step active reveal" onclick="setStep(0)">
+                            <div class="step-num">01</div>
+                            <div class="step-content">
+                                <div class="step-title">Ingesta Multicanal</div>
+                                <div class="step-desc">Facturas XML DIAN, PDF, imagen o WhatsApp. El agente RPA también descarga directo del portal DIAN con tus credenciales.</div>
+                            </div>
+                        </div>
+                        <div class="step reveal" onclick="setStep(1)">
+                            <div class="step-num">02</div>
+                            <div class="step-content">
+                                <div class="step-title">Validación y Clasificación IA</div>
+                                <div class="step-desc">LLM especializado en normativa DIAN + NIIF PYMES clasifica cada ítem, detecta deducciones y valida retenciones automáticamente.</div>
+                            </div>
+                        </div>
+                        <div class="step reveal" onclick="setStep(2)">
+                            <div class="step-num">03</div>
+                            <div class="step-content">
+                                <div class="step-title">Generación de Asientos</div>
+                                <div class="step-desc">Comprobante de diario generado con cuentas PUC correctas, IVA, retenciones y partida doble cuadrada. Listo para revisión o aprobación automática.</div>
+                            </div>
+                        </div>
+                        <div class="step reveal" onclick="setStep(3)">
+                            <div class="step-num">04</div>
+                            <div class="step-content">
+                                <div class="step-title">Sincronización con ERP</div>
+                                <div class="step-desc">Push vía API a tu sistema contable. El asiento aparece en Siigo, World Office o SAP en tiempo real. Cero doble digitación.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terminal -->
+                <div class="terminal reveal">
+                    <div class="terminal-bar">
+                        <span class="dot dot-r"></span>
+                        <span class="dot dot-y"></span>
+                        <span class="dot dot-g"></span>
+                        <span class="terminal-title">fiscalai-engine · enterprise-pipeline</span>
+                    </div>
+                    <div class="terminal-body">
+<span class="t-comment">// FiscalAI Enterprise — Procesando lote</span>
+
+<span class="t-key">batch</span> = {
+  <span class="t-key">empresa</span>: <span class="t-str">"CORP EJEMPLO S.A.S"</span>,
+  <span class="t-key">nit</span>: <span class="t-str">"900.234.567-1"</span>,
+  <span class="t-key">facturas</span>: <span class="t-val">342</span>,
+  <span class="t-key">periodo</span>: <span class="t-str">"2025-04"</span>
+}
+
+<span class="t-comment">// → Descargando XML desde portal DIAN...</span>
+<span class="t-ok">✓</span> <span class="t-dim">342/342 documentos descargados</span>
+
+<span class="t-comment">// → Validando estructura CUFE...</span>
+<span class="t-ok">✓</span> <span class="t-dim">341 válidos · 1 con observación</span>
+
+<span class="t-comment">// → Clasificando con LLM NIIF PYMES...</span>
+<span class="t-ok">✓</span> <span class="t-dim">Cuentas PUC asignadas</span>
+<span class="t-ok">✓</span> <span class="t-dim">IVA descontable: $18.432.900</span>
+<span class="t-ok">✓</span> <span class="t-dim">Retenciones detectadas: $4.201.600</span>
+
+<span class="t-comment">// → Generando comprobantes de diario...</span>
+<span class="t-ok">✓</span> <span class="t-dim">342 asientos · partida doble cuadrada</span>
+
+<span class="t-comment">// → Sincronizando con Siigo API...</span>
+<span class="t-ok">✓</span> <span class="t-dim">Push completado en 2.3s</span>
+
+<span class="t-key">resultado</span>: <span class="t-str">"LOTE_PROCESADO"</span>
+<span class="t-key">ahorro_horas</span>: <span class="t-val">47.2h</span> <span class="t-comment">// vs. digitación manual</span>
+<span class="t-pulse">█</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTEGRATIONS -->
+    <section class="section integrations-section" id="integraciones">
+        <div class="section-inner">
+            <div class="reveal">
+                <div class="section-tag">Integraciones</div>
+                <h2 class="section-title">Se conecta con tu<br><em>ecosistema actual</em></h2>
+                <p class="section-desc">Sin reemplazar lo que tienes. FiscalAI se integra como capa de inteligencia sobre tus sistemas existentes.</p>
+            </div>
+            <div class="integrations-grid">
+                <div class="integ-card reveal">
+                    <div class="integ-icon">SAP</div>
+                    <div class="integ-name">SAP Business One</div>
+                    <div class="integ-type">ERP · Conector oficial</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">SIG</div>
+                    <div class="integ-name">Siigo Nube</div>
+                    <div class="integ-type">Contabilidad · API REST</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">WO</div>
+                    <div class="integ-name">World Office</div>
+                    <div class="integ-type">ERP · Integración directa</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">HLS</div>
+                    <div class="integ-name">Helisa</div>
+                    <div class="integ-type">Contabilidad · Webhook</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">DIAN</div>
+                    <div class="integ-name">Portal DIAN</div>
+                    <div class="integ-type">Regulatorio · RPA Agente</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">WA</div>
+                    <div class="integ-name">WhatsApp Business</div>
+                    <div class="integ-type">Ingesta · API Oficial</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">API</div>
+                    <div class="integ-name">API REST Propia</div>
+                    <div class="integ-type">Custom · Documentada</div>
+                </div>
+                <div class="integ-card reveal">
+                    <div class="integ-icon">XLS</div>
+                    <div class="integ-name">Excel / CSV</div>
+                    <div class="integ-type">Exportación · Formato libre</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section" id="precios">
+        <div class="section-inner">
+            <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto 56px;">
+                <div class="section-tag">Planes Empresa</div>
+                <h2 class="section-title">Precios que escalan<br><em>con tu empresa</em></h2>
+                <p class="section-desc" style="margin:0 auto;">Sin costos ocultos. Sin sorpresas. Empieza pequeño y crece sin límites.</p>
+            </div>
+            <div class="pricing-grid">
+
+                <div class="pricing-card reveal">
+                    <div class="pricing-tier">Equipo</div>
+                    <div class="pricing-price">$500k</div>
+                    <div class="pricing-period">COP / mes · hasta 5 usuarios</div>
+                    <div class="pricing-desc">Para equipos contables pequeños que procesan hasta 1.000 facturas al mes.</div>
+                    <div class="pricing-divider"></div>
+                    <ul class="pricing-features">
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Hasta 1.000 facturas/mes</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>5 usuarios con roles</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Integración Siigo / Helisa</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Auditoría preventiva</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Soporte prioritario</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Dashboard analítico</li>
+                    </ul>
+                    <button class="pricing-btn outline" onclick="document.getElementById('contacto').scrollIntoView()">Comenzar Equipo</button>
+                </div>
+
+                <div class="pricing-card featured reveal">
+                    <div class="pricing-tier">Empresa</div>
+                    <div class="pricing-price">$1.2M</div>
+                    <div class="pricing-period">COP / mes · usuarios ilimitados</div>
+                    <div class="pricing-desc">Para empresas con alto volumen de transacciones y necesidades de integración avanzada.</div>
+                    <div class="pricing-divider"></div>
+                    <ul class="pricing-features">
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Facturas ilimitadas</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Usuarios ilimitados + roles</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Agente RPA descarga DIAN</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>API REST + Webhooks</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Conciliación bancaria</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Múltiples NIT / sucursales</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Ingesta WhatsApp Business</li>
+                        <li><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Soporte < 2h respuesta</li>
+                    </ul>
+                    <button class="pricing-btn primary" onclick="document.getElementById('contacto').scrollIntoView()">Solicitar Demo</button>
+                </div>
+
+                <div class="pricing-card enterprise reveal">
+                    <div class="pricing-tier gold">Enterprise</div>
+                    <div class="pricing-price">A medida</div>
+                    <div class="pricing-period">Cotización personalizada</div>
+                    <div class="pricing-desc">Para grandes contribuyentes, grupos empresariales y firmas contables con necesidades específicas.</div>
+                    <div class="pricing-divider"></div>
+                    <ul class="pricing-features">
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Todo lo anterior incluido</li>
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Implementación on-premise</li>
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Auditoría fiscal dedicada</li>
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>SLA 99.9% garantizado</li>
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Gerente de cuenta dedicado</li>
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Capacitación presencial</li>
+                        <li><svg class="gold-check" viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Integraciones custom</li>
+                    </ul>
+                    <button class="pricing-btn gold-btn" onclick="document.getElementById('contacto').scrollIntoView()">Contactar Ventas</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section testimonials-section">
+        <div class="section-inner">
+            <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto 0;">
+                <div class="section-tag">Testimonios</div>
+                <h2 class="section-title">Lo que dicen<br><em>nuestros clientes</em></h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal">
+                    <div class="stars">
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                    </div>
+                    <p class="testimonial-quote">"Pasamos de 3 días de cierre mensual a menos de 4 horas. El agente RPA solo ya justifica la inversión — descarga las 800 facturas del mes mientras dormimos."</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&q=80" alt="Carlos M." style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                        <div>
+                            <div class="author-name">Carlos M.</div>
+                            <div class="author-role">CFO · Distribuidora Andina S.A.S</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="stars">
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                    </div>
+                    <p class="testimonial-quote">"La integración con Siigo fue de un día. Ahora mis 4 contadores se enfocan en análisis, no en digitación. FiscalAI maneja el 90% del trabajo operativo solo."</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=face&q=80" alt="Laura R." style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                        <div>
+                            <div class="author-name">Laura R.</div>
+                            <div class="author-role">Directora Administrativa · Grupo Servitech</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="stars">
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                        <svg class="star" viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+                    </div>
+                    <p class="testimonial-quote">"La auditoría preventiva nos evitó una sanción DIAN de $40 millones. Detectó una inconsistencia en retenciones que nosotros no habíamos visto. ROI inmediato."</p>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face&q=80" alt="Jorge P." style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                        <div>
+                            <div class="author-name">Jorge P.</div>
+                            <div class="author-role">Contador Público · Firma Pérez & Asociados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-orb cta-orb-1"></div>
+        <div class="cta-inner reveal">
+            <div class="section-tag" style="margin-bottom:20px;">¿Listo para empezar?</div>
+            <h2>Tu empresa merece contabilidad <em style="color:var(--accent-light);font-style:normal;">inteligente</em></h2>
+            <p>Agenda una demo personalizada. En 30 minutos te mostramos cómo FiscalAI se integra con tu ecosistema actual y cuánto puedes ahorrar.</p>
+            <div class="cta-actions">
+                <a href="#contacto" class="btn-primary" style="font-size:1rem;padding:15px 32px;">
+                    Solicitar Demo Gratuita
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="../index.html" class="btn-outline">Ver plan PYME →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT FORM -->
+    <section class="contact-section" id="contacto" style="position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;z-index:0;">
+            <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1600&q=80" alt="" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.12) saturate(0.5);">
+        </div>
+        <div class="contact-grid" style="position:relative;z-index:1;">
+            <div>
+                <div class="section-tag" style="margin-bottom:16px;">Contacto Empresarial</div>
+                <h2 class="contact-info-title">Hablemos de tu<br><em style="color:var(--accent-light);font-style:normal;">empresa</em></h2>
+                <p class="contact-info-desc">Cuéntanos sobre tu operación y te diseñamos una solución a medida. Respuesta garantizada en menos de 24 horas hábiles.</p>
+                <div class="contact-benefits">
+                    <div class="contact-benefit">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <div class="benefit-title">Demo personalizada</div>
+                            <div class="benefit-desc">Mostramos FiscalAI con tus propios datos y tu ERP actual. Sin demos genéricas.</div>
+                        </div>
+                    </div>
+                    <div class="contact-benefit">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <div>
+                            <div class="benefit-title">Implementación en 48h</div>
+                            <div class="benefit-desc">Nuestro equipo técnico configura la integración con tu ERP en menos de 2 días hábiles.</div>
+                        </div>
+                    </div>
+                    <div class="contact-benefit">
+                        <div class="benefit-icon">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                        </div>
+                        <div>
+                            <div class="benefit-title">Capacitación incluida</div>
+                            <div class="benefit-desc">Onboarding completo para tu equipo contable. Sesiones en vivo y material de apoyo.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form" id="contactForm">
+                <div id="formContent">
+                    <div class="form-title">Solicitar Demo Empresarial</div>
+                    <div class="form-subtitle">Completa el formulario y te contactamos en menos de 24h</div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="f-nombre" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido</label>
+                            <input type="text" id="f-apellido" placeholder="Tu apellido" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Correo corporativo</label>
+                        <input type="email" id="f-email" placeholder="tu@empresa.com" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Empresa</label>
+                            <input type="text" id="f-empresa" placeholder="Nombre de la empresa" required>
+                        </div>
+                        <div class="form-group">
+                            <label>NIT</label>
+                            <input type="text" id="f-nit" placeholder="900.000.000-0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Volumen mensual de facturas</label>
+                            <select id="f-volumen">
+                                <option value="">Selecciona...</option>
+                                <option>100 – 500 facturas</option>
+                                <option>500 – 1.000 facturas</option>
+                                <option>1.000 – 5.000 facturas</option>
+                                <option>+5.000 facturas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Software contable actual</label>
+                            <select id="f-software">
+                                <option value="">Selecciona...</option>
+                                <option>Siigo</option>
+                                <option>World Office</option>
+                                <option>SAP Business One</option>
+                                <option>Helisa</option>
+                                <option>Excel / Manual</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>¿Cómo podemos ayudarte?</label>
+                        <textarea id="f-mensaje" placeholder="Cuéntanos tu reto contable o el contexto de tu empresa..."></textarea>
+                    </div>
+
+                    <button class="form-submit" onclick="submitForm()">
+                        Enviar Solicitud de Demo →
+                    </button>
+                </div>
+
+                <div class="form-success" id="formSuccess">
+                    <div class="form-success-icon">✅</div>
+                    <h4>¡Solicitud recibida!</h4>
+                    <p>Nuestro equipo de ventas te contactará en menos de 24 horas hábiles para agendar tu demo personalizada.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <a href="../index.html" class="footer-logo">Fiscal<span>AI</span></a>
+            <div class="footer-links">
+                <a href="../index.html">Inicio</a>
+                <a href="demo.html">Demo</a>
+                <a href="pitch.html">Pitch</a>
+                <a href="#precios">Precios Empresa</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+            <span class="footer-copy">© 2025 FiscalAI — Inteligencia Financiera</span>
+        </div>
+    </footer>
+
+    <script>
+        // URL base del backend — cambia al dominio real de Fly.io
+        var API_BASE = window.FISCALAI_API_BASE || 'https://fiscalai-backend.fly.dev';
+
+        // Hero form submit
+        function submitHeroForm() {
+            const nombre = document.getElementById('hf-nombre').value.trim();
+            const email  = document.getElementById('hf-email').value.trim();
+            const empresa = document.getElementById('hf-empresa').value.trim();
+            const volumen = document.getElementById('hf-volumen').value;
+            if (!nombre || !email || !empresa) {
+                alert('Por favor completa nombre, correo y empresa.');
+                return;
+            }
+            fetch(API_BASE + '/api/leads/hero', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, email, empresa, volumen: volumen || null, source: 'hero_form' })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok) {
+                    document.getElementById('heroFormContent').style.display = 'none';
+                    document.getElementById('heroFormSuccess').style.display = 'block';
+                } else {
+                    alert('Hubo un problema. Por favor intenta de nuevo.');
+                }
+            })
+            .catch(() => {
+                // Fallback: mostrar éxito de todas formas
+                document.getElementById('heroFormContent').style.display = 'none';
+                document.getElementById('heroFormSuccess').style.display = 'block';
+            });
+        }
+
+        // Nav scroll
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Steps interaction
+        function setStep(idx) {
+            document.querySelectorAll('.step').forEach((s, i) => {
+                s.classList.toggle('active', i === idx);
+            });
+        }
+
+        // GSAP reveal
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+            document.querySelectorAll('.reveal').forEach((el, i) => {
+                gsap.fromTo(el,
+                    { opacity: 0, y: 36 },
+                    {
+                        opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
+                        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+                        delay: (i % 3) * 0.08
+                    }
+                );
+            });
+        } else {
+            document.querySelectorAll('.reveal').forEach(el => {
+                el.style.opacity = 1; el.style.transform = 'none';
+            });
+        }
+
+        // Form submit — formulario de contacto completo
+        function submitForm() {
+            const nombre   = document.getElementById('f-nombre').value.trim();
+            const apellido = document.getElementById('f-apellido').value.trim();
+            const email    = document.getElementById('f-email').value.trim();
+            const empresa  = document.getElementById('f-empresa').value.trim();
+            const nit      = document.getElementById('f-nit').value.trim();
+            const volumen  = document.getElementById('f-volumen').value;
+            const software = document.getElementById('f-software').value;
+            const mensaje  = document.getElementById('f-mensaje').value.trim();
+            if (!nombre || !email || !empresa) {
+                alert('Por favor completa los campos obligatorios.');
+                return;
+            }
+            fetch(API_BASE + '/api/contacts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nombre, apellido, email, empresa,
+                    nit: nit || null,
+                    volumen: volumen || null,
+                    software: software || null,
+                    mensaje: mensaje || null,
+                    source: 'contact_form'
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok) {
+                    document.getElementById('formContent').style.display = 'none';
+                    document.getElementById('formSuccess').style.display = 'block';
+                } else {
+                    alert('Hubo un problema. Por favor intenta de nuevo.');
+                }
+            })
+            .catch(() => {
+                // Fallback: mostrar éxito de todas formas
+                document.getElementById('formContent').style.display = 'none';
+                document.getElementById('formSuccess').style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>

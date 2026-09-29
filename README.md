@@ -104,3 +104,5 @@ fly.toml         Configuración de Fly.io (región dfw, volumen /data)
 ## Autor
 
 **Alejandro Bernal** — Ingeniería de Sistemas e Industrial, Universidad de los Andes.
+
+Diseñé y desarrollé el proyecto completo: la API y el modelo de datos, el sitio y el panel de administración, la analítica con GA4, y el despliegue en Fly.io con GitHub Actions.
